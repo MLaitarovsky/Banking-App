@@ -1,27 +1,26 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import Image from "next/image";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+// import { Input } from "@/components/ui/input";
 import CustomInput from "./CustomInput";
 import { authformSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import SignIn from "@/app/(auth)/sign-in/page";
-import { useRouter } from "next/router";
-import SignUp from "@/app/(auth)/sign-up/page";
-import { getLoggedInUser, signIn } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
+import { signIn, signUp } from "@/lib/actions/user.actions";
+import PlaidLink from "./PlaidLink";
 
 const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const loggedInUser = await getLoggedInUser();
 
   const formSchema = authformSchema(type);
 
@@ -33,15 +32,28 @@ const AuthForm = ({ type }: { type: string }) => {
       password: "",
     },
   });
-
   // 2. Define a submit handler.
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
     try {
-      // Sign up with Appwrite and create plaid token
+      // Sign up with Appwrite & create plaid token
+
       if (type === "sign-up") {
-        const newUser = await SignUp(data);
+        const userData = {
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          address1: data.address1!,
+          city: data.city!,
+          state: data.state!,
+          postalCode: data.postalCode!,
+          dateOfBirth: data.dateOfBirth!,
+          ssn: data.ssn!,
+          email: data.email,
+          password: data.password,
+        };
+
+        const newUser = await signUp(userData);
 
         setUser(newUser);
       }
@@ -51,6 +63,7 @@ const AuthForm = ({ type }: { type: string }) => {
           email: data.email,
           password: data.password,
         });
+
         if (response) router.push("/");
       }
     } catch (error) {
@@ -62,8 +75,8 @@ const AuthForm = ({ type }: { type: string }) => {
 
   return (
     <section className="auth-form">
-      <header className="flex flex-col gap-8 md:gap-8">
-        <Link href="/" className="cursor-pointer flex items-center agp-1">
+      <header className="flex flex-col gap-5 md:gap-8">
+        <Link href="/" className="cursor-pointer flex items-center gap-1">
           <Image
             src="/icons/logo.svg"
             width={34}
@@ -71,9 +84,10 @@ const AuthForm = ({ type }: { type: string }) => {
             alt="Horizon logo"
           />
           <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">
-            Gibor
+            Horizon
           </h1>
         </Link>
+
         <div className="flex flex-col gap-1 md:gap-3">
           <h1 className="text-24 lg:text-36 font-semibold text-gray-900">
             {user ? "Link Account" : type === "sign-in" ? "Sign In" : "Sign Up"}
@@ -86,7 +100,9 @@ const AuthForm = ({ type }: { type: string }) => {
         </div>
       </header>
       {user ? (
-        <div className="flex flex-col gap-4">{/* PlaidLink */}</div>
+        <div className="flex flex-col gap-4">
+          <PlaidLink user={user} variant="primary" />
+        </div>
       ) : (
         <>
           <Form {...form}>
@@ -104,7 +120,7 @@ const AuthForm = ({ type }: { type: string }) => {
                       control={form.control}
                       name="lastName"
                       label="Last Name"
-                      placeholder="Enter your last name"
+                      placeholder="Enter your first name"
                     />
                   </div>
                   <CustomInput
@@ -156,6 +172,7 @@ const AuthForm = ({ type }: { type: string }) => {
                 label="Email"
                 placeholder="Enter your email"
               />
+
               <CustomInput
                 control={form.control}
                 name="password"
@@ -181,7 +198,7 @@ const AuthForm = ({ type }: { type: string }) => {
           </Form>
 
           <footer className="flex justify-center gap-1">
-            <p className="text-14 font-noraml">
+            <p className="text-14 font-normal text-gray-600">
               {type === "sign-in"
                 ? "Don't have an account?"
                 : "Already have an account?"}

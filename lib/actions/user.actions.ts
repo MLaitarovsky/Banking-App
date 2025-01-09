@@ -10,14 +10,10 @@ import {
   Products,
 } from "plaid";
 
-import { plaidClient } from "@/lib/plaid.config";
-import {
-  parseStringify,
-  extractCustomerIdFromUrl,
-  encryptId,
-} from "@/lib/utils";
+import { plaidClient } from "@/lib/plaid";
+import { parseStringify, extractCustomerIdFromUrl, encryptId } from "../utils";
 
-import { createAdminClient, createSessionClient } from "../appwrite.config";
+import { createAdminClient, createSessionClient } from "./appwrite";
 
 import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
 
@@ -125,15 +121,17 @@ export const getLoggedInUser = async () => {
 };
 
 export const logoutAccount = async () => {
-  try{
+  try {
     const { account } = await createSessionClient();
 
-    cookies().delete('appwrite-session');
+    cookies().delete("appwrite-session");
 
-    await account.deleteSession('current');
+    await account.deleteSession("current");
   } catch (error) {
+    console.error("An error occurred while logging out : ", error);
     return null;
-}
+  }
+};
 
 // CREATE PLAID LINK TOKEN
 export const createLinkToken = async (user: User) => {
