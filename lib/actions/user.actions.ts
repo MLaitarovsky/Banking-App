@@ -13,7 +13,7 @@ import {
 import { plaidClient } from "@/lib/plaid";
 import { parseStringify, extractCustomerIdFromUrl, encryptId } from "../utils";
 
-import { createAdminClient, createSessionClient } from "./appwrite";
+import { createAdminClient, createSessionClient } from "../appwrite";
 
 import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
 
