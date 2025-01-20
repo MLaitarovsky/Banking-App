@@ -40,7 +40,7 @@ const MobileNav = ({ user }: MobileNavProps) => {
               alt="Horizon logo"
             />
             <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">
-              Horizon
+              Gibor
             </h1>
           </Link>
           <div className="mobilenav-sheet">

@@ -1,7 +1,4 @@
-import type { Config } from "tailwindcss";
-
-const config = {
-  darkMode: ["class"],
+module.exports = {
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -108,6 +105,4 @@ const config = {
     require("@tailwindcss/typography"), // Add this for rich text
     require("@tailwindcss/aspect-ratio"), // Add this for responsive aspect ratios
   ],
-} satisfies Config;
-
-export default config;
+};
