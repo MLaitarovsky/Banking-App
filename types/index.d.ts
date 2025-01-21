@@ -87,7 +87,7 @@ declare type Bank = {
   accountId: string;
   bankId: string;
   accessToken: string;
-  fundingSourceUrl?: string;
+  fundingSourceUrl: string;
   userId: string;
   shareableId: string;
 };
